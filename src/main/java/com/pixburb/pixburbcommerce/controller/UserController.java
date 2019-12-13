@@ -8,10 +8,7 @@ import com.pixburb.pixburbcommerce.services.UserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -22,6 +19,7 @@ public class UserController {
     @Resource
     private UserService userServiceImpl;
 
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/login")
     public ResponseEntity login(@RequestBody Login login)
     {
@@ -32,12 +30,12 @@ public class UserController {
         {
             responseBody.setStatus(HttpStatus.OK.value());
             responseBody.setErrorMessage(HttpStatus.OK.name());
-            responseBody.setDisplayMessage("user accepted");
+            responseBody.setDisplayMessage("login accepted");
             return new ResponseEntity(responseBody, HttpStatus.OK);
         }
         responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
         responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
-        responseBody.setDisplayMessage("user does not exist");
-        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+        responseBody.setDisplayMessage("invalid user id/password");
+        return new ResponseEntity(responseBody, HttpStatus.OK);
     }
 }
