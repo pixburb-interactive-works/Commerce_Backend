@@ -2,6 +2,7 @@ package com.pixburb.pixburbcommerce.controller;
 
 import com.pixburb.pixburbcommerce.data.Login;
 
+import com.pixburb.pixburbcommerce.data.Response;
 import com.pixburb.pixburbcommerce.services.UserService;
 
 
@@ -25,11 +26,18 @@ public class UserController {
     public ResponseEntity login(@RequestBody Login login)
     {
 
+        Response responseBody = new Response();;
         Boolean response = userServiceImpl.login(login.getEmail(), login.getPassword());
         if(response)
         {
-            return new ResponseEntity(HttpStatus.OK);
+            responseBody.setStatus(HttpStatus.OK.value());
+            responseBody.setErrorMessage(HttpStatus.OK.name());
+            responseBody.setDisplayMessage("user accepted");
+            return new ResponseEntity(responseBody, HttpStatus.OK);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
+        responseBody.setDisplayMessage("user does not exist");
+        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
     }
 }
