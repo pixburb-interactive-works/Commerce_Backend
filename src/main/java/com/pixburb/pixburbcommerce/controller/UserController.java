@@ -15,27 +15,31 @@ import javax.annotation.Resource;
 @RestController
 public class UserController {
 
+    private static final String USER_URL = "users";
 
     @Resource
     private UserService userServiceImpl;
 
     @CrossOrigin
-    @RequestMapping(method = RequestMethod.POST, path = "/login")
+    @RequestMapping(method = RequestMethod.POST, path = USER_URL+"/login")
     public ResponseEntity login(@RequestBody Login login)
     {
 
-        Response responseBody = new Response();;
+        ResponseEntity responseEntity;
+        Response responseBody = new Response();
         Boolean response = userServiceImpl.login(login.getEmail(), login.getPassword());
         if(response)
         {
             responseBody.setStatus(HttpStatus.OK.value());
             responseBody.setErrorMessage(HttpStatus.OK.name());
-            responseBody.setDisplayMessage("login accepted");
-            return new ResponseEntity(responseBody, HttpStatus.OK);
+            responseBody.setDisplayMessage("Login accepted");
+            responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+            return responseEntity;
         }
         responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
         responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
-        responseBody.setDisplayMessage("invalid user id/password");
-        return new ResponseEntity(responseBody, HttpStatus.OK);
+        responseBody.setDisplayMessage("Invalid user-id/password");
+        responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+        return responseEntity;
     }
 }
