@@ -1,9 +1,8 @@
 package com.pixburb.pixburbcommerce.repository;
 
-import com.pixburb.pixburbcommerce.model.User;
+import com.pixburb.pixburbcommerce.model.UserModel;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 
-public interface UserRepository extends CrudRepository<User, String> {
+public interface UserRepository extends CrudRepository<UserModel, String> {
 }

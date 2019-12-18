@@ -3,6 +3,8 @@ package com.pixburb.pixburbcommerce.controller;
 import com.pixburb.pixburbcommerce.data.Login;
 
 import com.pixburb.pixburbcommerce.data.Response;
+import com.pixburb.pixburbcommerce.data.UserData;
+import com.pixburb.pixburbcommerce.data.UserVerificationData;
 import com.pixburb.pixburbcommerce.services.UserService;
 
 
@@ -27,7 +29,7 @@ public class UserController {
 
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        Boolean response = userServiceImpl.login(login.getEmail(), login.getPassword());
+        boolean response = userServiceImpl.login(login.getEmail(), login.getPassword());
         if(response)
         {
             responseBody.setStatus(HttpStatus.OK.value());
@@ -42,4 +44,50 @@ public class UserController {
         responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
         return responseEntity;
     }
+
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.POST, path = USER_URL+"/create")
+    public ResponseEntity createUser(@RequestBody UserData userData)
+    {
+        ResponseEntity responseEntity;
+        Response responseBody = new Response();
+        boolean response = userServiceImpl.createUser(userData);
+        if(response)
+        {
+            responseBody.setStatus(HttpStatus.OK.value());
+            responseBody.setErrorMessage(HttpStatus.OK.name());
+            responseBody.setDisplayMessage("User created");
+            responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+            return responseEntity;
+        }
+        responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
+        responseBody.setDisplayMessage("Failed to save the user");
+        responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+        return responseEntity;
+    }
+
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.POST, path = USER_URL+"/verify")
+    public ResponseEntity verifyUser(@RequestBody UserVerificationData userVerificationData)
+    {
+        ResponseEntity responseEntity;
+        Response responseBody = new Response();
+        boolean response = userServiceImpl.verifyUser(userVerificationData.getEmail(), userVerificationData.getOtp());
+        if(response)
+        {
+            responseBody.setStatus(HttpStatus.OK.value());
+            responseBody.setErrorMessage(HttpStatus.OK.name());
+            responseBody.setDisplayMessage("Account verified");
+            responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+            return responseEntity;
+        }
+        responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
+        responseBody.setDisplayMessage("Something is wrong.Please try again");
+        responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+        return responseEntity;
+    }
+
+
 }
