@@ -51,7 +51,7 @@ public class UserController {
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        boolean response = userServiceImpl.createUser(userData);
+        boolean response = userServiceImpl.createUserRequest(userData);
         if(response)
         {
             responseBody.setStatus(HttpStatus.OK.value());
@@ -73,7 +73,7 @@ public class UserController {
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        boolean response = userServiceImpl.verifyUser(userVerificationData.getEmail(), userVerificationData.getOtp());
+        boolean response = userServiceImpl.verifyUserRequest(userVerificationData.getEmail(), userVerificationData.getOtp());
         if(response)
         {
             responseBody.setStatus(HttpStatus.OK.value());

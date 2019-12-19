@@ -5,7 +5,7 @@ import com.pixburb.pixburbcommerce.data.UserData;
 public interface UserService {
     boolean login(String email, String password);
 
-    boolean createUser(UserData userData);
+    boolean createUserRequest(UserData userData);
 
-    boolean verifyUser(String email, String otp);
+    boolean verifyUserRequest(String email, String otp);
 }

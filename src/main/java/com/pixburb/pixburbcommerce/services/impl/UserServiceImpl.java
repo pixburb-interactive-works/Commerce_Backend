@@ -2,7 +2,9 @@ package com.pixburb.pixburbcommerce.services.impl;
 
 import com.pixburb.pixburbcommerce.data.UserData;
 import com.pixburb.pixburbcommerce.model.UserModel;
+import com.pixburb.pixburbcommerce.model.UserRequestModel;
 import com.pixburb.pixburbcommerce.repository.UserRepository;
+import com.pixburb.pixburbcommerce.repository.UserRequestRepository;
 import com.pixburb.pixburbcommerce.services.OtpService;
 import com.pixburb.pixburbcommerce.services.UserService;
 import org.springframework.stereotype.Component;
@@ -21,9 +23,12 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
+    private UserRequestRepository userRequestRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+
+    public UserServiceImpl(UserRepository userRepository, UserRequestRepository userRequestRepository) {
         this.userRepository = userRepository;
+        this.userRequestRepository = userRequestRepository;
     }
 
     @Override
@@ -38,24 +43,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean createUser(final UserData userData) {
+    public boolean createUserRequest(final UserData userData) {
         Optional<UserModel> user = getUserRepository().findById(userData.getEmail());
         if(!user.isPresent()) {
 
             //create user api
-            UserModel userModel = new UserModel();
-            userModel.setEmail(userData.getEmail());
-            userModel.setFirstName(userData.getFirstName());
-            userModel.setLastName(userData.getLastName());
-            userModel.setPassword(userData.getPassword());
-            userModel.setPhone(userData.getPhone());
-            userModel.setCreatedOn(new Date());
-            userModel.setActive(true);
-
-            userModel.setVerificationOtp(otpServiceImpl.generateOtp());
+            UserRequestModel userRequestModel = new UserRequestModel();
+            userRequestModel.setEmail(userData.getEmail());
+            userRequestModel.setFirstName(userData.getFirstName());
+            userRequestModel.setLastName(userData.getLastName());
+            userRequestModel.setPassword(userData.getPassword());
+            userRequestModel.setPhone(userData.getPhone());
+            userRequestModel.setRequestedOn(new Date());
+            userRequestModel.setActive(true);
+            userRequestModel.setVerificationOtp(otpServiceImpl.generateOtp());
             //save user
             try {
-                getUserRepository().save(userModel);
+                getUserRequestRepository().save(userRequestModel);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -65,19 +69,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean verifyUser(String email, String otp) {
+    public boolean verifyUserRequest(String email, String otp) {
         //login api
-        Optional<UserModel> user = getUserRepository().findById(email);
-        if(user.isPresent() && otp.equals(user.get().getVerificationOtp()))
+        Optional<UserRequestModel> userRequestModel = getUserRequestRepository().findById(email);
+        if(userRequestModel.isPresent() && otp.equals(userRequestModel.get().getVerificationOtp()))
         {
-            user.get().setVerifiedUser(true);
+            userRequestModel.get().setApprovalStatus(true);
             try {
-                getUserRepository().save(user.get());
+                //save UserRequestModel with approval status true
+                getUserRequestRepository().save(userRequestModel.get());
+
+
+                //create UserModel
+                UserModel userModel = new UserModel();
+                userModel.setEmail(userRequestModel.get().getEmail());
+                userModel.setFirstName(userRequestModel.get().getFirstName());
+                userModel.setLastName(userRequestModel.get().getLastName());
+                userModel.setPassword(userRequestModel.get().getPassword());
+                userModel.setPhone(userRequestModel.get().getPhone());
+                userModel.setCreatedOn(new Date());
+                userModel.setVerifiedUser(true);
+                userModel.setActive(true);
+                getUserRepository().save(userModel);
+
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return true;
         }
         return false;
     }
@@ -97,5 +115,13 @@ public class UserServiceImpl implements UserService {
 
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public UserRequestRepository getUserRequestRepository() {
+        return userRequestRepository;
+    }
+
+    public void setUserRequestRepository(UserRequestRepository userRequestRepository) {
+        this.userRequestRepository = userRequestRepository;
     }
 }

@@ -11,8 +11,6 @@ public class UserData {
 
     private String password;
 
-    private String createdBy;
-
     private String phone;
 
     public String getEmail() {
@@ -47,14 +45,6 @@ public class UserData {
         this.password = password;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(final String createdBy) {
-        this.createdBy = createdBy;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -62,4 +52,5 @@ public class UserData {
     public void setPhone(final String phone) {
         this.phone = phone;
     }
+
 }
