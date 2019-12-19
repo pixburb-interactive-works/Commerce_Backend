@@ -62,7 +62,7 @@ public class UserController {
         }
         responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
         responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
-        responseBody.setDisplayMessage("Failed to save the user");
+        responseBody.setDisplayMessage("User Creation Failed");
         responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
         return responseEntity;
     }
@@ -78,13 +78,13 @@ public class UserController {
         {
             responseBody.setStatus(HttpStatus.OK.value());
             responseBody.setErrorMessage(HttpStatus.OK.name());
-            responseBody.setDisplayMessage("Account verified");
+            responseBody.setDisplayMessage("Account Verified");
             responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
             return responseEntity;
         }
         responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
         responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
-        responseBody.setDisplayMessage("Something is wrong.Please try again");
+        responseBody.setDisplayMessage("Verification Unsuccessful");
         responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
         return responseEntity;
     }
