@@ -85,11 +85,15 @@ public class UserController {
             //remove cookie if present
             Cookie userNameCookieRemove = new Cookie("userId", "");
             userNameCookieRemove.setMaxAge(0);
+            userNameCookieRemove.setDomain("localhost");
+            userNameCookieRemove.setPath("/");
             httpServletResponse.addCookie(userNameCookieRemove);
 
             //create cookie
             Cookie userNameCookieCreate = new Cookie("userId", userVerificationData.getEmail());
             userNameCookieCreate.setMaxAge(60*15);
+            userNameCookieCreate.setDomain("localhost");
+            userNameCookieCreate.setPath("/");
             httpServletResponse.addCookie(userNameCookieCreate);
 
             //creating response body

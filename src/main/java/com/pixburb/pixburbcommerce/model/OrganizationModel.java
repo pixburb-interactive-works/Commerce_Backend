@@ -21,7 +21,18 @@ public class OrganizationModel {
     inverseJoinColumns = @JoinColumn(name="email"))
     private Set<UserModel> users;
 
+    @ManyToMany(mappedBy = "organizations")
+    private Set<RoleModel> roles;
+
     private boolean active;
+
+    public Set<RoleModel> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleModel> roles) {
+        this.roles = roles;
+    }
 
     public Long getId() {
         return id;

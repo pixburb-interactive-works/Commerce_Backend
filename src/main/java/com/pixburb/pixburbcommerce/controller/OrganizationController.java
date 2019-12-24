@@ -8,10 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Context;
+
+
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -23,15 +27,16 @@ public class OrganizationController {
     @Resource
     private OrganizatonService organizationServiceImpl;
 
+
+
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = ORG_URL +"/create")
-    public ResponseEntity create(@RequestBody OrganizationData organizationData, final HttpServletRequest httpServletRequest,
-                                 final HttpServletResponse httpServletResponse)
+    public ResponseEntity create(@RequestBody OrganizationData organizationData,
+                                 @Context HttpServletRequest httpServletRequest,
+                                 @Context HttpServletResponse httpServletResponse)
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-
-
         //check cookie for id
         Optional<String> presentCookie = readCookie("userId", httpServletRequest);
 

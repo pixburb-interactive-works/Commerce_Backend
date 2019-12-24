@@ -1,17 +1,33 @@
 package com.pixburb.pixburbcommerce.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
+@Entity
+@Table(name = "roles")
 public class RoleModel {
 
-    @Id
+    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Id
     private String roleName;
+
+    private boolean active;
+
+    @ManyToMany
+    @JoinTable(name = "organization_roles", joinColumns = @JoinColumn(name = "organizationName"), inverseJoinColumns = @JoinColumn(name="roleName"))
+    private Set<OrganizationModel> organizations;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public Long getId() {
         return id;
@@ -29,24 +45,24 @@ public class RoleModel {
         this.roleName = roleName;
     }
 
+    public Set<OrganizationModel> getOrganizations() {
+        return organizations;
+    }
+
+    public void setOrganizations(Set<OrganizationModel> organizations) {
+        this.organizations = organizations;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RoleModel roleModel = (RoleModel) o;
-        return Objects.equals(id, roleModel.id);
+        return Objects.equals(roleName, roleModel.roleName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "RoleModel{" +
-                "id=" + id +
-                ", roleName='" + roleName + '\'' +
-                '}';
+        return Objects.hash(roleName);
     }
 }
