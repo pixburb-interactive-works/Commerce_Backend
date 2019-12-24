@@ -2,18 +2,24 @@ package com.pixburb.pixburbcommerce.model;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "organizations")
 public class OrganizationModel {
 
-    @Id
+    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true)
+    @Id
     private String organizationName;
+
+    @ManyToMany
+    @JoinTable(name = "user_organization", joinColumns = @JoinColumn(name = "organizationName"),
+    inverseJoinColumns = @JoinColumn(name="email"))
+    private Set<UserModel> users;
 
     private boolean active;
 
@@ -31,6 +37,14 @@ public class OrganizationModel {
 
     public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
+    }
+
+    public Set<UserModel> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserModel> users) {
+        this.users = users;
     }
 
     public boolean isActive() {

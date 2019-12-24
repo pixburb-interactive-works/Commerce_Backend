@@ -5,6 +5,7 @@ import com.pixburb.pixburbcommerce.model.UserModel;
 import com.pixburb.pixburbcommerce.model.UserRequestModel;
 import com.pixburb.pixburbcommerce.repository.UserRepository;
 import com.pixburb.pixburbcommerce.repository.UserRequestRepository;
+import com.pixburb.pixburbcommerce.security.PasswordEncryption;
 import com.pixburb.pixburbcommerce.services.OtpService;
 import com.pixburb.pixburbcommerce.services.UserService;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     private OtpService otpServiceImpl;
 
+    @Resource
+    private PasswordEncryption passwordEncrytionImpl;
+
     private UserRepository userRepository;
 
     private UserRequestRepository userRequestRepository;
@@ -35,7 +39,7 @@ public class UserServiceImpl implements UserService {
     public boolean login(final String email, final String password) {
         //login api
         Optional<UserModel> user = getUserRepository().findById(email);
-        if(user.isPresent() && password.equals(user.get().getPassword()))
+        if(user.isPresent() && password.equals(passwordEncrytionImpl.decrypt(user.get().getPassword())))
         {
                 return true;
         }
@@ -52,7 +56,10 @@ public class UserServiceImpl implements UserService {
             userRequestModel.setEmail(userData.getEmail());
             userRequestModel.setFirstName(userData.getFirstName());
             userRequestModel.setLastName(userData.getLastName());
-            userRequestModel.setPassword(userData.getPassword());
+            if(userData.getPassword()!=null)
+            {
+                userRequestModel.setPassword(passwordEncrytionImpl.encrypt(userData.getPassword()));
+            }
             userRequestModel.setPhone(userData.getPhone());
             userRequestModel.setRequestedOn(new Date());
             userRequestModel.setActive(true);
@@ -85,12 +92,17 @@ public class UserServiceImpl implements UserService {
                 userModel.setEmail(userRequestModel.get().getEmail());
                 userModel.setFirstName(userRequestModel.get().getFirstName());
                 userModel.setLastName(userRequestModel.get().getLastName());
-                userModel.setPassword(userRequestModel.get().getPassword());
+                if(userRequestModel.get().getPassword()!=null)
+                {
+                    String password = passwordEncrytionImpl.decrypt(userRequestModel.get().getPassword());
+                    userModel.setPassword(passwordEncrytionImpl.encrypt(password));
+                }
                 userModel.setPhone(userRequestModel.get().getPhone());
                 userModel.setCreatedOn(new Date());
                 userModel.setVerifiedUser(true);
                 userModel.setActive(true);
                 getUserRepository().save(userModel);
+
 
                 return true;
             } catch (Exception e) {
@@ -123,5 +135,13 @@ public class UserServiceImpl implements UserService {
 
     public void setUserRequestRepository(UserRequestRepository userRequestRepository) {
         this.userRequestRepository = userRequestRepository;
+    }
+
+    public PasswordEncryption getPasswordEncrytionImpl() {
+        return passwordEncrytionImpl;
+    }
+
+    public void setPasswordEncrytionImpl(final PasswordEncryption passwordEncrytionImpl) {
+        this.passwordEncrytionImpl = passwordEncrytionImpl;
     }
 }

@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class UserController {
@@ -24,7 +27,8 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = USER_URL+"/login")
-    public ResponseEntity login(@RequestBody Login login)
+    public ResponseEntity login(@RequestBody Login login, final HttpServletRequest httpServletRequest,
+                                final HttpServletResponse httpServletResponse)
     {
 
         ResponseEntity responseEntity;
@@ -47,7 +51,8 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = USER_URL+"/create")
-    public ResponseEntity createUser(@RequestBody UserData userData)
+    public ResponseEntity createUser(@RequestBody UserData userData, final HttpServletRequest httpServletRequest,
+                                     final HttpServletResponse httpServletResponse)
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
@@ -69,13 +74,25 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = USER_URL+"/verify")
-    public ResponseEntity verifyUser(@RequestBody UserVerificationData userVerificationData)
+    public ResponseEntity verifyUser(@RequestBody UserVerificationData userVerificationData, final HttpServletRequest httpServletRequest,
+                                     final HttpServletResponse httpServletResponse)
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
         boolean response = userServiceImpl.verifyUserRequest(userVerificationData.getEmail(), userVerificationData.getOtp());
         if(response)
         {
+            //remove cookie if present
+            Cookie userNameCookieRemove = new Cookie("userId", "");
+            userNameCookieRemove.setMaxAge(0);
+            httpServletResponse.addCookie(userNameCookieRemove);
+
+            //create cookie
+            Cookie userNameCookieCreate = new Cookie("userId", userVerificationData.getEmail());
+            userNameCookieCreate.setMaxAge(60*15);
+            httpServletResponse.addCookie(userNameCookieCreate);
+
+            //creating response body
             responseBody.setStatus(HttpStatus.OK.value());
             responseBody.setErrorMessage(HttpStatus.OK.name());
             responseBody.setDisplayMessage("Account Verified");

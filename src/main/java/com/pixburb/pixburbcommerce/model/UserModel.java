@@ -3,6 +3,7 @@ package com.pixburb.pixburbcommerce.model;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -31,6 +32,9 @@ public class UserModel {
     private boolean verifiedUser;
 
     private String verificationOtp;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<OrganizationModel> organizations;
 
     private boolean active;
 
@@ -112,6 +116,14 @@ public class UserModel {
 
     public void setVerifiedUser(final boolean verifiedUser) {
         this.verifiedUser = verifiedUser;
+    }
+
+    public Set<OrganizationModel> getOrganizations() {
+        return organizations;
+    }
+
+    public void setOrganizations(final Set<OrganizationModel> organizations) {
+        this.organizations = organizations;
     }
 
     public String getVerificationOtp() {
