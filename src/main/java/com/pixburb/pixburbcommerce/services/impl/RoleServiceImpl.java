@@ -46,4 +46,20 @@ public class RoleServiceImpl implements RoleService {
 
         return false;
     }
+
+    @Override
+    public boolean removeRole(String roleName) {
+        if(roleName!=null)
+        {
+            Optional<RoleModel> roleModel = roleRepository.findById(roleName);
+            if(roleModel.isPresent())
+            {
+                roleRepository.delete(roleModel.get());
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

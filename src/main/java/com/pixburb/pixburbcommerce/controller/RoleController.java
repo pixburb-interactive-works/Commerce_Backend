@@ -42,4 +42,30 @@ public class RoleController {
         responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
         return responseEntity;
     }
+
+
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.GET, path = ROLE_URL+"/remove")
+    public ResponseEntity removeRole(@RequestBody RoleData roleData, final HttpServletRequest httpServletRequest,
+                                     final HttpServletResponse httpServletResponse)
+    {
+        ResponseEntity responseEntity;
+        Response responseBody = new Response();
+        boolean response = roleServiceImpl.removeRole(roleData.getRoleName());
+        if(response)
+        {
+            responseBody.setStatus(HttpStatus.OK.value());
+            responseBody.setErrorMessage(HttpStatus.OK.name());
+            responseBody.setDisplayMessage("Role Removed");
+            responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+            return responseEntity;
+        }
+        responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
+        responseBody.setDisplayMessage("Role Removal Failed");
+        responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+        return responseEntity;
+    }
+
+
 }

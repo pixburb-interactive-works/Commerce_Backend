@@ -15,11 +15,23 @@ public class RoleModel {
     @Id
     private String roleName;
 
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    private Set<UserModel> users;
+
+
     private boolean active;
 
     @ManyToMany
     @JoinTable(name = "organization_roles", joinColumns = @JoinColumn(name = "organizationName"), inverseJoinColumns = @JoinColumn(name="roleName"))
     private Set<OrganizationModel> organizations;
+
+    public Set<UserModel> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserModel> users) {
+        this.users = users;
+    }
 
     public boolean isActive() {
         return active;

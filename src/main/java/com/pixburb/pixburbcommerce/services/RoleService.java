@@ -6,4 +6,6 @@ public interface RoleService {
 
     boolean createRole(RoleData roleData);
 
+    boolean removeRole(String roleName);
+
 }

@@ -36,6 +36,10 @@ public class UserModel {
     @ManyToMany(mappedBy = "users")
     private Set<OrganizationModel> organizations;
 
+    @ManyToOne
+    @JoinColumn
+    private RoleModel role;
+
     private boolean active;
 
     public Long getUserId() {
@@ -124,6 +128,14 @@ public class UserModel {
 
     public void setOrganizations(final Set<OrganizationModel> organizations) {
         this.organizations = organizations;
+    }
+
+    public RoleModel getRole() {
+        return role;
+    }
+
+    public void setRole(final RoleModel role) {
+        this.role = role;
     }
 
     public String getVerificationOtp() {
