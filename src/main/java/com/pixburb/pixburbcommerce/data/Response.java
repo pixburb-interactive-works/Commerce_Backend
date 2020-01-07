@@ -3,6 +3,7 @@ package com.pixburb.pixburbcommerce.data;
 import org.springframework.web.servlet.view.script.ScriptTemplateConfig;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class Response {
 
@@ -12,7 +13,7 @@ public class Response {
 
     private String displayMessage;
 
-    private String[] data;
+    private List<Object> data;
 
     public int getStatus() {
         return status;
@@ -38,21 +39,11 @@ public class Response {
         this.displayMessage = displayMessage;
     }
 
-    public String[] getData() {
+    public List<Object> getData() {
         return data;
     }
 
-    public void setData(final String[] data) {
+    public void setData(List<Object> data) {
         this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return "Response{" +
-                "status='" + status + '\'' +
-                ", errorMessage='" + errorMessage + '\'' +
-                ", displayMessage='" + displayMessage + '\'' +
-                ", data=" + Arrays.toString(data) +
-                '}';
     }
 }
