@@ -16,9 +16,7 @@ public class OrganizationModel {
     @Id
     private String organizationName;
 
-    @ManyToMany
-    @JoinTable(name = "user_organization", joinColumns = @JoinColumn(name = "organizationName"),
-    inverseJoinColumns = @JoinColumn(name="email"))
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<UserModel> users;
 
     @ManyToMany(mappedBy = "organizations")

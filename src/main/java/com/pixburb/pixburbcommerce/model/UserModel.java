@@ -33,8 +33,9 @@ public class UserModel {
 
     private String verificationOtp;
 
-    @ManyToMany(mappedBy = "users")
-    private Set<OrganizationModel> organizations;
+    @ManyToOne
+    @JoinColumn
+    private OrganizationModel organization;
 
     @ManyToOne
     @JoinColumn
@@ -122,12 +123,12 @@ public class UserModel {
         this.verifiedUser = verifiedUser;
     }
 
-    public Set<OrganizationModel> getOrganizations() {
-        return organizations;
+    public OrganizationModel getOrganization() {
+        return organization;
     }
 
-    public void setOrganizations(final Set<OrganizationModel> organizations) {
-        this.organizations = organizations;
+    public void setOrganization(OrganizationModel organization) {
+        this.organization = organization;
     }
 
     public RoleModel getRole() {

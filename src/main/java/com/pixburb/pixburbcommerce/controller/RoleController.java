@@ -14,15 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
+@RequestMapping("/roles")
 public class RoleController {
 
-    private static final String ROLE_URL = "roles";
+
 
     @Resource
     private RoleService roleServiceImpl;
 
     @CrossOrigin
-    @RequestMapping(method = RequestMethod.POST, path = ROLE_URL+"/create")
+    @RequestMapping(method = RequestMethod.POST, path = "/create")
     public ResponseEntity createUser(@RequestBody RoleData roleData, final HttpServletRequest httpServletRequest,
                                      final HttpServletResponse httpServletResponse) {
         ResponseEntity responseEntity;
@@ -45,7 +46,7 @@ public class RoleController {
 
 
     @CrossOrigin
-    @RequestMapping(method = RequestMethod.GET, path = ROLE_URL+"/remove")
+    @RequestMapping(method = RequestMethod.GET, path = "/remove")
     public ResponseEntity removeRole(@RequestBody RoleData roleData, final HttpServletRequest httpServletRequest,
                                      final HttpServletResponse httpServletResponse)
     {

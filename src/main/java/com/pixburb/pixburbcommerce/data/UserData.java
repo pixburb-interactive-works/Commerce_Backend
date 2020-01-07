@@ -13,6 +13,36 @@ public class UserData {
 
     private String phone;
 
+    private String createdBy;
+
+    private String organization;
+
+    private String role;
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(final String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(final String organization) {
+        this.organization = organization;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(final String role) {
+        this.role = role;
+    }
+
     public String getEmail() {
         return email;
     }

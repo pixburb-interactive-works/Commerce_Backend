@@ -20,9 +20,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/organization")
 public class OrganizationController {
-
-    private static final String ORG_URL = "organization";
 
     @Resource
     private OrganizatonService organizationServiceImpl;
@@ -30,7 +29,7 @@ public class OrganizationController {
 
 
     @CrossOrigin
-    @RequestMapping(method = RequestMethod.POST, path = ORG_URL +"/create")
+    @RequestMapping(method = RequestMethod.POST, path = "/create")
     public ResponseEntity create(@RequestBody OrganizationData organizationData,
                                  @Context HttpServletRequest httpServletRequest,
                                  @Context HttpServletResponse httpServletResponse)
