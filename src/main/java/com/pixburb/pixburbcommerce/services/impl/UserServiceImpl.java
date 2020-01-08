@@ -158,14 +158,16 @@ public class UserServiceImpl implements UserService {
         if(email != null)
         {
             Optional<UserModel> userModel = userRepository.findById(email);
-            if(userModel.isPresent())
+            if(userModel.isPresent() && userModel.get().isActive())
             {
                 UserData userData = new UserData();
                 userData.setEmail(userModel.get().getEmail());
                 userData.setFirstName(userModel.get().getFirstName());
                 userData.setLastName(userModel.get().getLastName());
                 userData.setPhone(userModel.get().getPhone());
-                userData.setRole(userModel.get().getRole().getRoleName());
+                if(userModel.get().getRole()!=null) {
+                    userData.setRole(userModel.get().getRole().getRoleName());
+                }
                 return userData;
             }
         }
