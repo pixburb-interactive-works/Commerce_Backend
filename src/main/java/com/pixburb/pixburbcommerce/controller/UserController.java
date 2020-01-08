@@ -123,6 +123,52 @@ public class UserController {
     }
 
     @CrossOrigin
+    @RequestMapping(method = RequestMethod.GET, path = "/findUser")
+    public ResponseEntity findUser(@RequestParam("email") String email)
+    {
+        ResponseEntity responseEntity;
+        Response responseBody = new Response();
+        UserData userDataList = userServiceImpl.findUser(email);
+        if(userDataList != null)
+        {
+            responseBody.setStatus(HttpStatus.OK.value());
+            responseBody.setErrorMessage(HttpStatus.OK.name());
+            responseBody.setDisplayMessage("");
+            responseBody.setData(Collections.singletonList(userDataList));
+            responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+            return responseEntity;
+        }
+        responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
+        responseBody.setDisplayMessage("Something went wrong");
+        responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+        return responseEntity;
+    }
+
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.GET, path = "/deactivate")
+    public ResponseEntity deactivateUser(@RequestParam("email") String email)
+    {
+        ResponseEntity responseEntity;
+        Response responseBody = new Response();
+        boolean state = userServiceImpl.deactivateUser(email);
+        if(state)
+        {
+            responseBody.setStatus(HttpStatus.OK.value());
+            responseBody.setErrorMessage(HttpStatus.OK.name());
+            responseBody.setDisplayMessage("User Deactivated");
+            responseBody.setData(null);
+            responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+            return responseEntity;
+        }
+        responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
+        responseBody.setDisplayMessage("Something went wrong");
+        responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+        return responseEntity;
+    }
+
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/verify")
     public ResponseEntity verifyUser(@RequestBody UserVerificationData userVerificationData, final HttpServletRequest httpServletRequest,
                                      final HttpServletResponse httpServletResponse)
