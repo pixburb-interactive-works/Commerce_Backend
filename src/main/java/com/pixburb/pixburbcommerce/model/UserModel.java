@@ -3,18 +3,17 @@ package com.pixburb.pixburbcommerce.model;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 
 
 @Entity
 @Table(name = "users")
 public class UserModel {
 
-    @Column(unique = true)
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
-    @Id
+    @Column(unique = true)
     private String email;
 
     private String firstName;
@@ -35,7 +34,7 @@ public class UserModel {
 
     @ManyToOne
     @JoinColumn
-    private OrganizationModel organization;
+    private OrganizationModel organizationId;
 
     @ManyToOne
     @JoinColumn
@@ -123,12 +122,12 @@ public class UserModel {
         this.verifiedUser = verifiedUser;
     }
 
-    public OrganizationModel getOrganization() {
-        return organization;
+    public OrganizationModel getOrganizationId() {
+        return organizationId;
     }
 
-    public void setOrganization(OrganizationModel organization) {
-        this.organization = organization;
+    public void setOrganizationId(OrganizationModel organizationId) {
+        this.organizationId = organizationId;
     }
 
     public RoleModel getRole() {

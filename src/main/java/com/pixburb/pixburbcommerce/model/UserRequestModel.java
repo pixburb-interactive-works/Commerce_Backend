@@ -8,11 +8,12 @@ import java.util.Objects;
 @Table(name = "user_request")
 public class UserRequestModel {
 
-    @Column(unique = true)
+
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long requestId;
 
-    @Id
+    @Column(unique = true)
     private String email;
 
     private String firstName;

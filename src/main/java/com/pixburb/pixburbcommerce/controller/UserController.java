@@ -146,6 +146,29 @@ public class UserController {
     }
 
     @CrossOrigin
+    @RequestMapping(method = RequestMethod.POST, path = "/update")
+    public ResponseEntity updateUser(@RequestBody UserData userData, final HttpServletRequest httpServletRequest,
+                                     final HttpServletResponse httpServletResponse)
+    {
+        ResponseEntity responseEntity;
+        Response responseBody = new Response();
+        boolean response = userServiceImpl.updateUser(userData);
+        if(response)
+        {
+            responseBody.setStatus(HttpStatus.OK.value());
+            responseBody.setErrorMessage(HttpStatus.OK.name());
+            responseBody.setDisplayMessage("User updated");
+            responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+            return responseEntity;
+        }
+        responseBody.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseBody.setErrorMessage(HttpStatus.BAD_REQUEST.name());
+        responseBody.setDisplayMessage("User Updation Failed");
+        responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
+        return responseEntity;
+    }
+
+    @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "/deactivate")
     public ResponseEntity deactivateUser(@RequestParam("email") String email)
     {
@@ -178,20 +201,6 @@ public class UserController {
         boolean response = userServiceImpl.verifyUserRequest(userVerificationData.getEmail(), userVerificationData.getOtp());
         if(response)
         {
-            //remove cookie if present
-            Cookie userNameCookieRemove = new Cookie("userId", "");
-            userNameCookieRemove.setMaxAge(0);
-            userNameCookieRemove.setDomain("localhost");
-            userNameCookieRemove.setPath("/");
-            httpServletResponse.addCookie(userNameCookieRemove);
-
-            //create cookie
-            Cookie userNameCookieCreate = new Cookie("userId", userVerificationData.getEmail());
-            userNameCookieCreate.setMaxAge(60*15);
-            userNameCookieCreate.setDomain("localhost");
-            userNameCookieCreate.setPath("/");
-            httpServletResponse.addCookie(userNameCookieCreate);
-
             //creating response body
             responseBody.setStatus(HttpStatus.OK.value());
             responseBody.setErrorMessage(HttpStatus.OK.name());

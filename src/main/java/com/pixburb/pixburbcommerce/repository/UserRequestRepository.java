@@ -3,5 +3,8 @@ package com.pixburb.pixburbcommerce.repository;
 import com.pixburb.pixburbcommerce.model.UserRequestModel;
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserRequestRepository extends CrudRepository<UserRequestModel, String> {
+import java.util.Optional;
+
+public interface UserRequestRepository extends CrudRepository<UserRequestModel, Long> {
+    Optional<UserRequestModel> findByEmail(String email);
 }

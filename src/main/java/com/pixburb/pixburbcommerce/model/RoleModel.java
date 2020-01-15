@@ -8,11 +8,12 @@ import java.util.Set;
 @Table(name = "roles")
 public class RoleModel {
 
-    @Column(unique = true)
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Id
+
+    @Column(unique = true)
     private String roleName;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)

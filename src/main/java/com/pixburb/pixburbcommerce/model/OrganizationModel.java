@@ -9,11 +9,11 @@ import java.util.Set;
 @Table(name = "organizations")
 public class OrganizationModel {
 
-    @Column(unique = true)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long organizationId;
+
+    @Column(unique = true)
     private String organizationName;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
@@ -32,12 +32,12 @@ public class OrganizationModel {
         this.roles = roles;
     }
 
-    public Long getId() {
-        return id;
+    public Long getOrganizationId() {
+        return organizationId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOrganizationId(Long organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getOrganizationName() {
@@ -80,7 +80,7 @@ public class OrganizationModel {
     @Override
     public String toString() {
         return "OrganizationModel{" +
-                "id=" + id +
+                "id=" + organizationId +
                 ", organizationName='" + organizationName + '\'' +
                 ", active=" + active +
                 '}';
