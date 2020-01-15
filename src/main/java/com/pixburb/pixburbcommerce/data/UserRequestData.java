@@ -1,6 +1,6 @@
 package com.pixburb.pixburbcommerce.data;
 
-public class UserData {
+public class UserRequestData {
 
 
     private String email;

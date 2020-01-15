@@ -1,23 +1,24 @@
 package com.pixburb.pixburbcommerce.services;
 
-import com.pixburb.pixburbcommerce.data.UserData;
+import com.pixburb.pixburbcommerce.data.UserRequestData;
+import com.pixburb.pixburbcommerce.data.UserResponseData;
 
 import java.util.List;
 
 public interface UserService {
     boolean login(String email, String password);
 
-    boolean createUserRequest(UserData userData);
+    boolean createUserRequest(UserRequestData userRequestData);
 
-    boolean createUser(UserData userData);
+    boolean createUser(UserRequestData userRequestData);
 
-    List<UserData> viewAllUsersByOrganization(String organization);
+    List<UserRequestData> viewAllUsersByOrganization(String organization);
 
-    UserData findUser(String email);
+    UserResponseData findUser(String email);
 
     boolean  deactivateUser(String email);
 
-    boolean updateUser(UserData userData);
+    boolean updateUser(UserRequestData userRequestData);
 
     boolean verifyUserRequest(String email, String otp);
 }

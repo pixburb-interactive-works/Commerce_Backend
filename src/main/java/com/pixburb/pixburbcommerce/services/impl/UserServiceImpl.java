@@ -1,6 +1,7 @@
 package com.pixburb.pixburbcommerce.services.impl;
 
-import com.pixburb.pixburbcommerce.data.UserData;
+import com.pixburb.pixburbcommerce.data.UserRequestData;
+import com.pixburb.pixburbcommerce.data.UserResponseData;
 import com.pixburb.pixburbcommerce.model.OrganizationModel;
 import com.pixburb.pixburbcommerce.model.RoleModel;
 import com.pixburb.pixburbcommerce.model.UserModel;
@@ -55,20 +56,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean createUserRequest(final UserData userData) {
-        Optional<UserModel> user = getUserRepository().findByEmail(userData.getEmail());
+    public boolean createUserRequest(final UserRequestData userRequestData) {
+        Optional<UserModel> user = getUserRepository().findByEmail(userRequestData.getEmail());
         if(!user.isPresent()) {
 
             //create user api
             UserRequestModel userRequestModel = new UserRequestModel();
-            userRequestModel.setEmail(userData.getEmail());
-            userRequestModel.setFirstName(userData.getFirstName().toUpperCase());
-            userRequestModel.setLastName(userData.getLastName().toUpperCase());
-            if(userData.getPassword()!=null)
+            userRequestModel.setEmail(userRequestData.getEmail());
+            userRequestModel.setFirstName(userRequestData.getFirstName().toUpperCase());
+            userRequestModel.setLastName(userRequestData.getLastName().toUpperCase());
+            if(userRequestData.getPassword()!=null)
             {
-                userRequestModel.setPassword(passwordEncrytionImpl.encrypt(userData.getPassword()));
+                userRequestModel.setPassword(passwordEncrytionImpl.encrypt(userRequestData.getPassword()));
             }
-            userRequestModel.setPhone(userData.getPhone());
+            userRequestModel.setPhone(userRequestData.getPhone());
             userRequestModel.setRequestedOn(new Date());
             userRequestModel.setActive(true);
             userRequestModel.setVerificationOtp(otpServiceImpl.generateOtp());
@@ -84,32 +85,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean createUser(final UserData userData) {
+    public boolean createUser(final UserRequestData userRequestData) {
 
-        if(userData != null)
+        if(userRequestData != null)
         {
             UserModel userModel = new UserModel();
-            userModel.setFirstName(userData.getFirstName().toUpperCase());
-            userModel.setLastName(userData.getLastName().toUpperCase());
-            userModel.setEmail(userData.getEmail());
-            if(userData.getPassword() != null) {
-                userModel.setPassword(passwordEncrytionImpl.encrypt(userData.getPassword()));
+            userModel.setFirstName(userRequestData.getFirstName().toUpperCase());
+            userModel.setLastName(userRequestData.getLastName().toUpperCase());
+            userModel.setEmail(userRequestData.getEmail());
+            if(userRequestData.getPassword() != null) {
+                userModel.setPassword(passwordEncrytionImpl.encrypt(userRequestData.getPassword()));
             }
-            userModel.setPhone(userData.getPhone());
-            userModel.setCreatedBy(userData.getCreatedBy());
-            if(userData.getOrganization() != null)
+            userModel.setPhone(userRequestData.getPhone());
+            userModel.setCreatedBy(userRequestData.getCreatedBy());
+            if(userRequestData.getOrganization() != null)
             {
 
                 Optional<OrganizationModel> organizationModel = organizationRepository.
-                        findByOrganizationName(userData.getOrganization().toUpperCase());
+                        findByOrganizationName(userRequestData.getOrganization().toUpperCase());
                 if(organizationModel.isPresent()) {
                     userModel.setOrganizationId(organizationModel.get());
                 }
             }
 
-            if(userData.getRole() != null)
+            if(userRequestData.getRole() != null)
             {
-                Optional<RoleModel> roleModel = roleRepository.findByRoleName(userData.getRole().toUpperCase());
+                Optional<RoleModel> roleModel = roleRepository.findByRoleName(userRequestData.getRole().toUpperCase());
                 if(roleModel.isPresent())
                 {
                     userModel.setRole(roleModel.get());
@@ -133,44 +134,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserData> viewAllUsersByOrganization(final String organization) {
+    public List<UserRequestData> viewAllUsersByOrganization(final String organization) {
         Iterable<UserModel> userModels = userRepository.findAll();
-        List<UserData> userDataList = new ArrayList<>();
+        List<UserRequestData> userRequestDataList = new ArrayList<>();
         Optional<OrganizationModel> organizationModel = organizationRepository.findByOrganizationName(organization.toUpperCase());
         if(organizationModel.isPresent()) {
             for (UserModel userModel : userModels) {
                 if (userModel.getOrganizationId() != null) {
                     if (userModel.getOrganizationId().getOrganizationId().equals(organizationModel.get().getOrganizationId())) {
-                        UserData userData = new UserData();
-                        userData.setEmail(userModel.getEmail());
-                        userData.setFirstName(userModel.getFirstName());
-                        userData.setLastName(userModel.getLastName());
-                        userData.setPhone(userModel.getPhone());
-                        userData.setRole(userModel.getRole().getRoleName());
-                        userDataList.add(userData);
+                        UserRequestData userRequestData = new UserRequestData();
+                        userRequestData.setEmail(userModel.getEmail());
+                        userRequestData.setFirstName(userModel.getFirstName());
+                        userRequestData.setLastName(userModel.getLastName());
+                        userRequestData.setPhone(userModel.getPhone());
+                        userRequestData.setRole(userModel.getRole().getRoleName());
+                        userRequestDataList.add(userRequestData);
                     }
                 }
             }
         }
-        return userDataList;
+        return userRequestDataList;
     }
 
     @Override
-    public UserData findUser(String email) {
+    public UserResponseData findUser(String email) {
         if(email != null)
         {
             Optional<UserModel> userModel = userRepository.findByEmail(email);
             if(userModel.isPresent() && userModel.get().isActive())
             {
-                UserData userData = new UserData();
-                userData.setEmail(userModel.get().getEmail());
-                userData.setFirstName(userModel.get().getFirstName());
-                userData.setLastName(userModel.get().getLastName());
-                userData.setPhone(userModel.get().getPhone());
+                UserResponseData userResponseData = new UserResponseData();
+                userResponseData.setEmail(userModel.get().getEmail());
+                userResponseData.setFirstName(userModel.get().getFirstName());
+                userResponseData.setLastName(userModel.get().getLastName());
+                userResponseData.setPhone(userModel.get().getPhone());
                 if(userModel.get().getRole()!=null) {
-                    userData.setRole(userModel.get().getRole().getRoleName());
+                    userResponseData.setRoleId(userModel.get().getRole().getId());
+                    userResponseData.setRoleName(userModel.get().getRole().getRoleName());
                 }
-                return userData;
+                if(userModel.get().getOrganizationId()!=null)
+                {
+                    userResponseData.setOrganizationId(userModel.get().getOrganizationId().getOrganizationId());
+                    userResponseData.setOrganizationName(userModel.get().getOrganizationId().getOrganizationName());
+                }
+                return userResponseData;
             }
         }
         return null;
@@ -191,28 +198,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUser(UserData userData) {
-        if(userData!=null)
+    public boolean updateUser(UserRequestData userRequestData) {
+        if(userRequestData !=null)
         {
-            Optional<UserModel> userModel = userRepository.findByEmail(userData.getEmail());
+            Optional<UserModel> userModel = userRepository.findByEmail(userRequestData.getEmail());
             if(userModel.isPresent())
             {
-                userModel.get().setFirstName(userData.getFirstName().toUpperCase());
-                userModel.get().setLastName(userData.getLastName().toUpperCase());
-                userModel.get().setPhone(userData.getPhone());
+                userModel.get().setFirstName(userRequestData.getFirstName().toUpperCase());
+                userModel.get().setLastName(userRequestData.getLastName().toUpperCase());
+                userModel.get().setPhone(userRequestData.getPhone());
                 userModel.get().setActive(true);
-                if(userData.getOrganization() != null)
+                if(userRequestData.getOrganization() != null)
                 {
                     Optional<OrganizationModel> organizationModel = organizationRepository.
-                            findByOrganizationName(userData.getOrganization().toUpperCase());
+                            findByOrganizationName(userRequestData.getOrganization().toUpperCase());
                     if(organizationModel.isPresent()) {
                         userModel.get().setOrganizationId(organizationModel.get());
                     }
                 }
 
-                if(userData.getRole() != null)
+                if(userRequestData.getRole() != null)
                 {
-                    Optional<RoleModel> roleModel = roleRepository.findByRoleName(userData.getRole().toUpperCase());
+                    Optional<RoleModel> roleModel = roleRepository.findByRoleName(userRequestData.getRole().toUpperCase());
                     if(roleModel.isPresent())
                     {
                         userModel.get().setRole(roleModel.get());

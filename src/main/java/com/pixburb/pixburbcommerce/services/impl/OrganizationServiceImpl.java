@@ -69,6 +69,7 @@ public class OrganizationServiceImpl implements OrganizatonService {
 
                 OrganizationModel organizationModel = new OrganizationModel();
                 organizationModel.setOrganizationName(organizationData.getOrganizationName().toUpperCase());
+                organizationModel.setCreatedBy(userModel.getEmail());
                 Set<UserModel> userModelSet = new HashSet<>();
                 Optional<UserModel> user = userRepository.findByEmail(userModel.getEmail());
                 if(user.isPresent())

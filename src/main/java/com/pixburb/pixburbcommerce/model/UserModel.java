@@ -30,7 +30,6 @@ public class UserModel {
 
     private boolean verifiedUser;
 
-    private String verificationOtp;
 
     @ManyToOne
     @JoinColumn
@@ -138,13 +137,6 @@ public class UserModel {
         this.role = role;
     }
 
-    public String getVerificationOtp() {
-        return verificationOtp;
-    }
-
-    public void setVerificationOtp(final String verificationOtp) {
-        this.verificationOtp = verificationOtp;
-    }
 
     @Override
     public boolean equals(final Object o) {
