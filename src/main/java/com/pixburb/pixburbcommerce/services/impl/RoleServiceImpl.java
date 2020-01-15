@@ -28,10 +28,11 @@ public class RoleServiceImpl implements RoleService {
     public boolean createRole(RoleData roleData) {
         if (roleData != null) {
             RoleModel roleModel = new RoleModel();
-            roleModel.setRoleName(roleData.getRoleName());
+            roleModel.setRoleName(roleData.getRoleName().toUpperCase());
             Set<OrganizationModel> organizationModels = new HashSet<>();
             if (roleData.getOrganizationName() != null) {
-                Optional<OrganizationModel> organization = organizationRepository.findById(roleData.getOrganizationName());
+                Optional<OrganizationModel> organization = organizationRepository.
+                        findByOrganizationName(roleData.getOrganizationName());
                 if (organization.isPresent()) {
                     organizationModels.add(organization.get());
                 }
@@ -51,7 +52,7 @@ public class RoleServiceImpl implements RoleService {
     public boolean removeRole(String roleName) {
         if(roleName!=null)
         {
-            Optional<RoleModel> roleModel = roleRepository.findById(roleName);
+            Optional<RoleModel> roleModel = roleRepository.findByRoleName(roleName.toUpperCase());
             if(roleModel.isPresent())
             {
                 roleRepository.delete(roleModel.get());

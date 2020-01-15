@@ -36,14 +36,6 @@ public class OrganizationController {
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        //check cookie for id
-        Optional<String> presentCookie = readCookie("userId", httpServletRequest);
-
-        if(presentCookie.isPresent())
-        {
-            organizationData.setCreatedBy(presentCookie.get());
-        }
-
 
         boolean response = organizationServiceImpl.createOrganization(organizationData);
         if(response)
@@ -61,10 +53,4 @@ public class OrganizationController {
         return responseEntity;
     }
 
-    private Optional<String> readCookie(String key, HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
-                .filter(c -> key.equals(c.getName()))
-                .map(Cookie::getValue)
-                .findAny();
-    }
 }

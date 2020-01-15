@@ -15,7 +15,6 @@ import com.pixburb.pixburbcommerce.services.UserService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
@@ -47,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean login(final String email, final String password) {
         //login api
-        Optional<UserModel> user = getUserRepository().findById(email);
+        Optional<UserModel> user = getUserRepository().findByEmail(email);
         if(user.isPresent() && password.equals(passwordEncrytionImpl.decrypt(user.get().getPassword())))
         {
                 return true;
@@ -57,14 +56,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean createUserRequest(final UserData userData) {
-        Optional<UserModel> user = getUserRepository().findById(userData.getEmail());
+        Optional<UserModel> user = getUserRepository().findByEmail(userData.getEmail());
         if(!user.isPresent()) {
 
             //create user api
             UserRequestModel userRequestModel = new UserRequestModel();
             userRequestModel.setEmail(userData.getEmail());
-            userRequestModel.setFirstName(userData.getFirstName());
-            userRequestModel.setLastName(userData.getLastName());
+            userRequestModel.setFirstName(userData.getFirstName().toUpperCase());
+            userRequestModel.setLastName(userData.getLastName().toUpperCase());
             if(userData.getPassword()!=null)
             {
                 userRequestModel.setPassword(passwordEncrytionImpl.encrypt(userData.getPassword()));
@@ -90,8 +89,8 @@ public class UserServiceImpl implements UserService {
         if(userData != null)
         {
             UserModel userModel = new UserModel();
-            userModel.setFirstName(userData.getFirstName());
-            userModel.setLastName(userData.getLastName());
+            userModel.setFirstName(userData.getFirstName().toUpperCase());
+            userModel.setLastName(userData.getLastName().toUpperCase());
             userModel.setEmail(userData.getEmail());
             if(userData.getPassword() != null) {
                 userModel.setPassword(passwordEncrytionImpl.encrypt(userData.getPassword()));
@@ -101,15 +100,16 @@ public class UserServiceImpl implements UserService {
             if(userData.getOrganization() != null)
             {
 
-                Optional<OrganizationModel> organizationModel = organizationRepository.findById(userData.getOrganization());
+                Optional<OrganizationModel> organizationModel = organizationRepository.
+                        findByOrganizationName(userData.getOrganization().toUpperCase());
                 if(organizationModel.isPresent()) {
-                    userModel.setOrganization(organizationModel.get());
+                    userModel.setOrganizationId(organizationModel.get());
                 }
             }
 
             if(userData.getRole() != null)
             {
-                Optional<RoleModel> roleModel = roleRepository.findById(userData.getRole());
+                Optional<RoleModel> roleModel = roleRepository.findByRoleName(userData.getRole().toUpperCase());
                 if(roleModel.isPresent())
                 {
                     userModel.setRole(roleModel.get());
@@ -136,17 +136,19 @@ public class UserServiceImpl implements UserService {
     public List<UserData> viewAllUsersByOrganization(final String organization) {
         Iterable<UserModel> userModels = userRepository.findAll();
         List<UserData> userDataList = new ArrayList<>();
-        for(UserModel userModel : userModels)
-        {
-            if(userModel.getOrganization()!=null) {
-                if (userModel.getOrganization().getOrganizationName().equals(organization)) {
-                    UserData userData = new UserData();
-                    userData.setEmail(userModel.getEmail());
-                    userData.setFirstName(userModel.getFirstName());
-                    userData.setLastName(userModel.getLastName());
-                    userData.setPhone(userModel.getPhone());
-                    userData.setRole(userModel.getRole().getRoleName());
-                    userDataList.add(userData);
+        Optional<OrganizationModel> organizationModel = organizationRepository.findByOrganizationName(organization.toUpperCase());
+        if(organizationModel.isPresent()) {
+            for (UserModel userModel : userModels) {
+                if (userModel.getOrganizationId() != null) {
+                    if (userModel.getOrganizationId().getOrganizationId().equals(organizationModel.get().getOrganizationId())) {
+                        UserData userData = new UserData();
+                        userData.setEmail(userModel.getEmail());
+                        userData.setFirstName(userModel.getFirstName());
+                        userData.setLastName(userModel.getLastName());
+                        userData.setPhone(userModel.getPhone());
+                        userData.setRole(userModel.getRole().getRoleName());
+                        userDataList.add(userData);
+                    }
                 }
             }
         }
@@ -157,7 +159,7 @@ public class UserServiceImpl implements UserService {
     public UserData findUser(String email) {
         if(email != null)
         {
-            Optional<UserModel> userModel = userRepository.findById(email);
+            Optional<UserModel> userModel = userRepository.findByEmail(email);
             if(userModel.isPresent() && userModel.get().isActive())
             {
                 UserData userData = new UserData();
@@ -177,7 +179,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deactivateUser(String email) {
         if(email != null) {
-            Optional<UserModel> userModel = userRepository.findById(email);
+            Optional<UserModel> userModel = userRepository.findByEmail(email);
             if(userModel.isPresent())
             {
                 userModel.get().setActive(false);
@@ -190,41 +192,48 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUser(UserData userData) {
+        if(userData!=null)
+        {
+            Optional<UserModel> userModel = userRepository.findByEmail(userData.getEmail());
+            if(userModel.isPresent())
+            {
+                userModel.get().setFirstName(userData.getFirstName().toUpperCase());
+                userModel.get().setLastName(userData.getLastName().toUpperCase());
+                userModel.get().setPhone(userData.getPhone());
+                userModel.get().setActive(true);
+                if(userData.getOrganization() != null)
+                {
+                    Optional<OrganizationModel> organizationModel = organizationRepository.
+                            findByOrganizationName(userData.getOrganization().toUpperCase());
+                    if(organizationModel.isPresent()) {
+                        userModel.get().setOrganizationId(organizationModel.get());
+                    }
+                }
+
+                if(userData.getRole() != null)
+                {
+                    Optional<RoleModel> roleModel = roleRepository.findByRoleName(userData.getRole().toUpperCase());
+                    if(roleModel.isPresent())
+                    {
+                        userModel.get().setRole(roleModel.get());
+                    }
+                }
+                userRepository.save(userModel.get());
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public boolean verifyUserRequest(String email, String otp) {
         //login api
-        Optional<UserRequestModel> userRequestModel = getUserRequestRepository().findById(email);
+        Optional<UserRequestModel> userRequestModel = getUserRequestRepository().findByEmail(email);
         if(userRequestModel.isPresent() && otp.equals(userRequestModel.get().getVerificationOtp()))
         {
             userRequestModel.get().setApprovalStatus(true);
-            try {
-                //save UserRequestModel with approval status true
-                getUserRequestRepository().save(userRequestModel.get());
-
-
-                //create UserModel
-                UserModel userModel = new UserModel();
-                userModel.setEmail(userRequestModel.get().getEmail());
-                userModel.setFirstName(userRequestModel.get().getFirstName());
-                userModel.setLastName(userRequestModel.get().getLastName());
-                if(userRequestModel.get().getPassword()!=null)
-                {
-                    userModel.setPassword(userRequestModel.get().getPassword());
-                }
-                userModel.setPhone(userRequestModel.get().getPhone());
-                userModel.setCreatedOn(new Date());
-                userModel.setVerifiedUser(true);
-                userModel.setActive(true);
-                getUserRepository().save(userModel);
-
-
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            getUserRequestRepository().save(userRequestModel.get());
+            return true;
         }
         return false;
     }

@@ -1,6 +1,8 @@
 package com.pixburb.pixburbcommerce.bootstrap;
 
+import com.pixburb.pixburbcommerce.model.RoleModel;
 import com.pixburb.pixburbcommerce.model.UserModel;
+import com.pixburb.pixburbcommerce.repository.RoleRepository;
 import com.pixburb.pixburbcommerce.repository.UserRepository;
 import com.pixburb.pixburbcommerce.security.PasswordEncryption;
 import org.springframework.context.ApplicationListener;
@@ -15,11 +17,14 @@ public class DevBootStrap implements ApplicationListener<ContextRefreshedEvent> 
 
     private UserRepository userRepository;
 
+    private RoleRepository roleRepository;
+
     @Resource
     private PasswordEncryption passwordEncrytionImpl;
 
-    public DevBootStrap(UserRepository userRepository) {
+    public DevBootStrap(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -38,6 +43,18 @@ public class DevBootStrap implements ApplicationListener<ContextRefreshedEvent> 
        userModel.setCreatedOn(new Date());
        userModel.setVerifiedUser(true);
        userRepository.save(userModel);
+
+       RoleModel roleModelAdmin = new RoleModel();
+       roleModelAdmin.setActive(true);
+       roleModelAdmin.setRoleName("ADMIN");
+
+
+       RoleModel roleModelManager = new RoleModel();
+       roleModelManager.setRoleName("MANAGER");
+       roleModelManager.setActive(true);
+
+       roleRepository.save(roleModelAdmin);
+       roleRepository.save(roleModelManager);
 
     }
 
