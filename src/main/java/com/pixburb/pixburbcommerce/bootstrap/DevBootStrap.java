@@ -44,6 +44,10 @@ public class DevBootStrap implements ApplicationListener<ContextRefreshedEvent> 
        userModel.setVerifiedUser(true);
        userRepository.save(userModel);
 
+       RoleModel roleModelSuperAdmin = new RoleModel();
+       roleModelSuperAdmin.setActive(true);
+       roleModelSuperAdmin.setRoleName("SUPER-ADMIN");
+       
        RoleModel roleModelAdmin = new RoleModel();
        roleModelAdmin.setActive(true);
        roleModelAdmin.setRoleName("ADMIN");
@@ -53,6 +57,7 @@ public class DevBootStrap implements ApplicationListener<ContextRefreshedEvent> 
        roleModelManager.setRoleName("MANAGER");
        roleModelManager.setActive(true);
 
+       roleRepository.save(roleModelSuperAdmin);
        roleRepository.save(roleModelAdmin);
        roleRepository.save(roleModelManager);
 

@@ -1,10 +1,7 @@
 package com.pixburb.pixburbcommerce.controller;
 
-import com.pixburb.pixburbcommerce.data.Login;
+import com.pixburb.pixburbcommerce.data.*;
 
-import com.pixburb.pixburbcommerce.data.Response;
-import com.pixburb.pixburbcommerce.data.UserData;
-import com.pixburb.pixburbcommerce.data.UserVerificationData;
 import com.pixburb.pixburbcommerce.services.UserService;
 
 
@@ -13,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
@@ -54,12 +50,12 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/createAdmin")
-    public ResponseEntity createAdminUser(@RequestBody UserData userData, final HttpServletRequest httpServletRequest,
+    public ResponseEntity createAdminUser(@RequestBody UserRequestData userRequestData, final HttpServletRequest httpServletRequest,
                                           final HttpServletResponse httpServletResponse)
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        boolean response = userServiceImpl.createUserRequest(userData);
+        boolean response = userServiceImpl.createUserRequest(userRequestData);
         if(response)
         {
             responseBody.setStatus(HttpStatus.OK.value());
@@ -77,12 +73,12 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/create")
-    public ResponseEntity createUser(@RequestBody UserData userData, final HttpServletRequest httpServletRequest,
-                                          final HttpServletResponse httpServletResponse) {
+    public ResponseEntity createUser(@RequestBody UserRequestData userRequestData, final HttpServletRequest httpServletRequest,
+                                     final HttpServletResponse httpServletResponse) {
 
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        boolean response = userServiceImpl.createUser(userData);
+        boolean response = userServiceImpl.createUser(userRequestData);
         if(response)
         {
             responseBody.setStatus(HttpStatus.OK.value());
@@ -105,13 +101,13 @@ public class UserController {
                                      final HttpServletResponse httpServletResponse) {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        List<UserData> userDataList = userServiceImpl.viewAllUsersByOrganization(organization);
-        if(userDataList != null)
+        List<UserRequestData> userRequestDataList = userServiceImpl.viewAllUsersByOrganization(organization);
+        if(userRequestDataList != null)
         {
             responseBody.setStatus(HttpStatus.OK.value());
             responseBody.setErrorMessage(HttpStatus.OK.name());
             responseBody.setDisplayMessage("");
-            responseBody.setData(Collections.singletonList(userDataList));
+            responseBody.setData(Collections.singletonList(userRequestDataList));
             responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
             return responseEntity;
         }
@@ -128,13 +124,13 @@ public class UserController {
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        UserData userDataList = userServiceImpl.findUser(email);
-        if(userDataList != null)
+        UserResponseData userResponseData = userServiceImpl.findUser(email);
+        if(userResponseData != null)
         {
             responseBody.setStatus(HttpStatus.OK.value());
             responseBody.setErrorMessage(HttpStatus.OK.name());
             responseBody.setDisplayMessage("");
-            responseBody.setData(Collections.singletonList(userDataList));
+            responseBody.setData(Collections.singletonList(userResponseData));
             responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
             return responseEntity;
         }
@@ -147,12 +143,12 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/update")
-    public ResponseEntity updateUser(@RequestBody UserData userData, final HttpServletRequest httpServletRequest,
+    public ResponseEntity updateUser(@RequestBody UserRequestData userRequestData, final HttpServletRequest httpServletRequest,
                                      final HttpServletResponse httpServletResponse)
     {
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        boolean response = userServiceImpl.updateUser(userData);
+        boolean response = userServiceImpl.updateUser(userRequestData);
         if(response)
         {
             responseBody.setStatus(HttpStatus.OK.value());

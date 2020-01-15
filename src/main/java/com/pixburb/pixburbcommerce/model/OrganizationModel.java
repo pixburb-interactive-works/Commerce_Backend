@@ -16,6 +16,8 @@ public class OrganizationModel {
     @Column(unique = true)
     private String organizationName;
 
+    private String createdBy;
+
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<UserModel> users;
 
@@ -62,6 +64,14 @@ public class OrganizationModel {
 
     public void setActive(final boolean active) {
         this.active = active;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override
