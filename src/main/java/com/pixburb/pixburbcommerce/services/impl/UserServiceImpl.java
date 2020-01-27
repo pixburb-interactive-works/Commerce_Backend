@@ -1,5 +1,6 @@
 package com.pixburb.pixburbcommerce.services.impl;
 
+import com.pixburb.pixburbcommerce.data.Login;
 import com.pixburb.pixburbcommerce.data.UserRequestData;
 import com.pixburb.pixburbcommerce.data.UserResponseData;
 import com.pixburb.pixburbcommerce.model.OrganizationModel;
@@ -13,6 +14,7 @@ import com.pixburb.pixburbcommerce.repository.UserRequestRepository;
 import com.pixburb.pixburbcommerce.security.PasswordEncryption;
 import com.pixburb.pixburbcommerce.services.OtpService;
 import com.pixburb.pixburbcommerce.services.UserService;
+import com.pixburb.pixburbcommerce.util.JwtUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     private RoleRepository roleRepository;
 
+    @Resource
+    private JwtUtil jwtUtil;
+
     public UserServiceImpl(final OrganizationRepository organizationRepository, final UserRepository userRepository,
                            final UserRequestRepository userRequestRepository, final RoleRepository roleRepository) {
         this.organizationRepository = organizationRepository;
@@ -45,14 +50,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean login(final String email, final String password) {
+    public String login(Login userDetails) {
         //login api
-        Optional<UserModel> user = getUserRepository().findByEmail(email);
-        if(user.isPresent() && password.equals(passwordEncrytionImpl.decrypt(user.get().getPassword())))
+        Optional<UserModel> user = getUserRepository().findByEmail(userDetails.getEmail());
+        if(user.isPresent() && userDetails.getPassword().equals(passwordEncrytionImpl.decrypt(user.get().getPassword())))
         {
-                return true;
+            String token = jwtUtil.generateToken(userDetails);
+            if(token!=null)
+            {
+                return token;
+            }
+
         }
-        return false;
+        return null;
     }
 
     @Override

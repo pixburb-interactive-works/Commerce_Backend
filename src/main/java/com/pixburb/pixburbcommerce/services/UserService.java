@@ -1,12 +1,13 @@
 package com.pixburb.pixburbcommerce.services;
 
+import com.pixburb.pixburbcommerce.data.Login;
 import com.pixburb.pixburbcommerce.data.UserRequestData;
 import com.pixburb.pixburbcommerce.data.UserResponseData;
 
 import java.util.List;
 
 public interface UserService {
-    boolean login(String email, String password);
+    String login(Login login);
 
     boolean createUserRequest(UserRequestData userRequestData);
 
