@@ -32,12 +32,13 @@ public class UserController {
 
         ResponseEntity responseEntity;
         Response responseBody = new Response();
-        boolean response = userServiceImpl.login(login.getEmail(), login.getPassword());
-        if(response)
+        String response = userServiceImpl.login(login);
+        if(response!=null)
         {
             responseBody.setStatus(HttpStatus.OK.value());
             responseBody.setErrorMessage(HttpStatus.OK.name());
             responseBody.setDisplayMessage("Login accepted");
+            responseBody.setData(Collections.singletonList(response));
             responseEntity = new ResponseEntity(responseBody, HttpStatus.OK);
             return responseEntity;
         }
